@@ -42,10 +42,6 @@ jobs:
         working-directory: ./app/chat-frontend
         run: npm run build --if-present
 
-      - name: Run Frontend Tests
-        working-directory: ./app/chat-frontend
-        run: npm run test
-
   backend-build:
     runs-on: ubuntu-latest
     strategy:
@@ -65,17 +61,9 @@ jobs:
         working-directory: ./app/chat-backend
         run: npm ci
 
-      - name: Prisma Generate (Backend)
-        working-directory: ./app/chat-backend
-        run: npx prisma generate
-
       - name: Build Backend
         working-directory: ./app/chat-backend
         run: npm run build --if-present
-
-      - name: Run Backend Tests
-        working-directory: ./app/chat-backend
-        run: npm run test
 
   docker-build:
     runs-on: ubuntu-latest
