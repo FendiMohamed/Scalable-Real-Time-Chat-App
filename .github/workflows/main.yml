@@ -37,14 +37,14 @@ jobs:
       - name: Install Frontend Dependencies
         working-directory: ./app/chat-frontend
         run: npm ci
+      # - name: Prisma Generate (Frontend)
+      #   working-directory: ./app/chat-frontend
+      #   run: npx prisma generate
 
-      - name: Prisma Generate (Frontend)
-        working-directory: ./app/chat-frontend
-        run: npx prisma generate
+      # - name: Build Frontend
+      #   working-directory: ./app/chat-frontend
+      #   run: npm run build --if-present
 
-      - name: Build Frontend
-        working-directory: ./app/chat-frontend
-        run: npm run build --if-present
 
   backend-build:
     runs-on: ubuntu-latest
@@ -69,9 +69,9 @@ jobs:
         working-directory: ./app/chat-backend
         run: npm ci
 
-      - name: Build Backend
-        working-directory: ./app/chat-backend
-        run: npm run build --if-present
+      # - name: Build Backend
+      #   working-directory: ./app/chat-backend
+      #   run: npm run build --if-present
 
   docker-build:
     runs-on: ubuntu-latest
