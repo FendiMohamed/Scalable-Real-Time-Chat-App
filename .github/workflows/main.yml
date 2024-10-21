@@ -122,15 +122,12 @@ jobs:
           git config --global user.email "m.fendi@esi-sba.dz"
           git config --global user.name "FendiMohamed"
 
-      - name: Display Frontend Deployment File Before Update
-        run: cat kubernetes/frontend/frontend-deploy.yaml
-
       - name: Update Frontend Deployment File
         run: |
-          sed -i "s#fendimohamed/frontend-chat-app:.*#fendimohamed/frontend-chat-app:${{ github.sha }}#g" kubernetes/frontend/frontend-deploy.yaml
+          sed -i "s#fendimohamed/frontend-chat-app:.*#fendimohamed/backend-chat-app:${{ github.sha }}#g" kubernetes/frontend/frontend-deploy.yaml
+          git add kubernetes/frontend/frontend-deploy.yaml
+          git commit -m "Update frontend image to ${{ github.sha }}"
 
-      - name: Display Frontend Deployment File After Update
-        run: cat kubernetes/frontend/frontend-deploy.yaml
 
       - name: Update Backend Deployment File
         run: |
