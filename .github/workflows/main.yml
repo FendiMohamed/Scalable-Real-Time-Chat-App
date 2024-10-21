@@ -24,6 +24,9 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      - name: List Files in Frontend Directory
+        run: ls -la ./app/chat-frontend
+
       - name: Set up Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
@@ -50,6 +53,9 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+
+      - name: List Files in Backend Directory
+        run: ls -la ./app/chat-backend
 
       - name: Set up Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
