@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: chat-app
-        image: fendimohamed/frontend-chat-app:a
+        image: fendimohamed/backend-chat-app:d9c2ee39f16b0e65f9876ecf8f53ab72adb9013e
         env:
         - name: DATABASE_URL
           valueFrom:
