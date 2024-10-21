@@ -6,4 +6,4 @@ jobs:
   HelloWorld:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "hello ${{ github.actor }} to the github workflows"
+      - run: git remote get-url origin
