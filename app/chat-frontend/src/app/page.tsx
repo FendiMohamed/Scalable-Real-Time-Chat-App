@@ -16,7 +16,7 @@ export default async function Home() {
       <div className="absolute pointer-events-none inset-0 flex items-center justify-center dark:bg-black bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
   <div className="text-center">
     <h1 className="text-4xl sm:text-7xl font-bold relative z-20 bg-clip-text text-transparent bg-gradient-to-b from-neutral-200 to-neutral-500 py-8">
-      Experience  <Cover>blazing-fast</Cover> <br/> real-time chats
+      Experience  <Cover>blazing-fast</Cover> <br/> real-time chat
     </h1>
     <p className="text-lg md:text-lg lg:text-xl font-semibold max-w-7xl mx-auto mt-2 mb-1 relative z-20 py-1 bg-clip-text text-transparent bg-gradient-to-b from-neutral-800 via-neutral-700 to-neutral-700 dark:from-neutral-800 dark:via-white dark:to-white">Log in to start connecting instantly!</p>
     
