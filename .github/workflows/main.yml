@@ -4,9 +4,15 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'app/chat-frontend/**'
+      - 'app/chat-backend/**'
   pull_request:
     branches:
       - main
+    paths:
+      - 'app/chat-frontend/**'
+      - 'app/chat-backend/**'
 
 jobs:
   frontend-build:
@@ -25,15 +31,19 @@ jobs:
           cache: 'npm'
 
       - name: Install Frontend Dependencies
-        working-directory: ./app/frontend
+        working-directory: ./app/chat-frontend
         run: npm ci
 
+      - name: Prisma Generate (Frontend)
+        working-directory: ./app/chat-frontend
+        run: npx prisma generate
+
       - name: Build Frontend
-        working-directory: ./app/frontend
+        working-directory: ./app/chat-frontend
         run: npm run build --if-present
 
       - name: Run Frontend Tests
-        working-directory: ./app/frontend
+        working-directory: ./app/chat-frontend
         run: npm run test
 
   backend-build:
@@ -52,15 +62,19 @@ jobs:
           cache: 'npm'
 
       - name: Install Backend Dependencies
-        working-directory: ./app/backend
+        working-directory: ./app/chat-backend
         run: npm ci
 
+      - name: Prisma Generate (Backend)
+        working-directory: ./app/chat-backend
+        run: npx prisma generate
+
       - name: Build Backend
-        working-directory: ./app/backend
+        working-directory: ./app/chat-backend
         run: npm run build --if-present
 
       - name: Run Backend Tests
-        working-directory: ./app/backend
+        working-directory: ./app/chat-backend
         run: npm run test
 
   docker-build:
@@ -90,7 +104,7 @@ jobs:
       - name: Build and Push Frontend Image
         uses: docker/build-push-action@v2
         with:
-          context: ./frontend
+          context: ./app/chat-frontend
           tags: |
             fendimohamed/frontend-chat-app:${{ github.sha }} 
             ghcr.io/fendimohamed/frontend-chat-app:${{ github.sha }}
@@ -99,46 +113,39 @@ jobs:
       - name: Build and Push Backend Image
         uses: docker/build-push-action@v2
         with:
-          context: ./backend
+          context: ./app/chat-backend
           tags: |
-            fendi/backend-chat-app:${{ github.sha }}
-            ghcr.io/fendi/backend-chat-app:${{ github.sha }}
+            fendimohamed/backend-chat-app:${{ github.sha }}
+            ghcr.io/fendimohamed/backend-chat-app:${{ github.sha }}
           push: ${{ github.ref == 'refs/heads/main' }}
 
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
-        
-update-manifest-stage:
+  update-deployment:
+    runs-on: ubuntu-latest
+    needs: [docker-build]
+    steps:
+      - name: Checkout Infra Repo
+        uses: actions/checkout@v3
+        with:
+          repository: FendiMohamed/Scalable-Real-Time-Chat-App
+          ref: 'main'
+          token: ${{ secrets.G_TOKEN }}
 
-runs-on: ubuntu-latest
+      - name: Set up Git Config
+        run: |
+          git config --global user.email "m.fendi@esi-sba.dz"
+          git config --global user.name "FendiMohamed"
 
-needs: ['build-and-push-docker-image']
+      - name: Update Frontend Deployment File
+        run: |
+          sed -i "s#farooqabdulla279/chat-app-frontend:.*#fendimohamed/frontend-chat-app:${{ github.sha }}#g" kubernetes/frontend/frontend-deploy.yaml
+          git add kubernetes/frontend/frontend-deploy.yaml
+          git commit -m "Update frontend image to ${{ github.sha }}"
 
-steps:
+      - name: Update Backend Deployment File
+        run: |
+          sed -i "s#farooqabdulla279/chat-app-backend:.*#fendimohamed/backend-chat-app:${{ github.sha }}#g" kubernetes/backend/backend-deploy.yaml
+          git add kubernetes/backend/backend-deploy.yaml
+          git commit -m "Update backend image to ${{ github.sha }}"
 
-- uses: actions/checkout@v3
-
-with:
-repository: FendiMohamed/Scalable-Real-Time-Chat-App
-ref: 'main'
-token: ${{ secrets.G_TOKEN }}
-
-- name: setup git config
-
-run: /
-
-git config --global user.email "m.fendi@esi-sba.dz"
-
-git config --global user.name "FendiMohamed"
-
-echo ${{ github.sha }}
-
-sed -i "s#${{github.actor }}.*#${{github.actor }}/Scalable-Real-Time-Chat-App:${{github.sha}}#g" deployment.yaml
-
-git add -A
-
-git commit -am "Update image for ${{ github.sha }}"
-
-- run: echo ${{ github }}
-
-- run: git push origin main
+      - name: Push Changes
+        run: git push origin main
