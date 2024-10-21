@@ -2,7 +2,7 @@ export { auth as middleware } from "../lib/auth";
 
 // import { auth } from "@/auth";
 // import type { NextRequest } from "next/server";
-// import { NextResponse } from "next/server";
+// import { NextResponse } from "next/server";.
 
 // export async function middleware(request: NextRequest ){
 //     console.log("Middleware running");
