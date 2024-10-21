@@ -21,7 +21,7 @@ spec:
           # - Each init container must complete successfully before the next one starts.
       containers:
       - name:  chat-app-backend
-        image:  fendimohamed/backend-chat-app:a
+        image:  fendimohamed/backend-chat-app:2b661e7fc15ceff7ff9852c65d0e46d5c0fb267e
         env:
         - name: REDIS_URL
           valueFrom:
