@@ -90,20 +90,12 @@ jobs:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Login to GitHub Packages
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.G_TOKEN }}
-
       - name: Build and Push Frontend Image
         uses: docker/build-push-action@v2
         with:
           context: ./app/chat-frontend
           tags: |
             fendimohamed/frontend-chat-app:${{ github.sha }} 
-            ghcr.io/fendimohamed/frontend-chat-app:${{ github.sha }}
           push: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Build and Push Backend Image
@@ -112,7 +104,6 @@ jobs:
           context: ./app/chat-backend
           tags: |
             fendimohamed/backend-chat-app:${{ github.sha }}
-            ghcr.io/fendimohamed/backend-chat-app:${{ github.sha }}
           push: ${{ github.ref == 'refs/heads/main' }}
 
   update-deployment:
